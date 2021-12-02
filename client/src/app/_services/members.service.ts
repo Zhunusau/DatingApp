@@ -45,20 +45,17 @@ export class MembersService {
     if(response) {
       return of(response);
     }
-
-    let params = new HttpParams();
     //pagination
-    params = params.append('pageNumber', userParams.pageNumber.toString());
-    params = params.append('pageSize', userParams.pageSize.toString());
+    let httpParams = this.getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
     //age
-    params = params.append('minAge', userParams.minAge.toString());
-    params = params.append('maxAge', userParams.maxAge.toString());
+    httpParams = httpParams.append('minAge', userParams.minAge.toString());
+    httpParams = httpParams.append('maxAge', userParams.maxAge.toString());
     //gender
-    params = params.append('gender', userParams.gender.toString());
+    httpParams = httpParams.append('gender', userParams.gender.toString());
     //orderBy
-    params = params.append('orderBy', userParams.orderBy.toString());
+    httpParams = httpParams.append('orderBy', userParams.orderBy.toString());
 
-    return this.getPaginatedResult<Member[]>(this.baseUrl + 'users', params).pipe(
+    return this.getPaginatedResult<Member[]>(this.baseUrl + 'users', httpParams).pipe(
       map(response => {
         this.memberCache.set(Object.values(userParams).join('-'), response);
         return response;
@@ -92,6 +89,23 @@ export class MembersService {
   deletePhoto(photoId: number) {
     return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
   }
+  
+  addLike(username: string) {
+    return this.http.post(this.baseUrl + 'likes/' + username, {});
+  }
+
+  getLikes(predicate: string, pageNumber: number, pageSize: number) {
+    let httpParams = this.getPaginationHeaders(pageNumber, pageSize);
+    httpParams = httpParams.append('predicate', predicate);
+    return this.getPaginatedResult<Member[]>(this.baseUrl + 'likes', httpParams)
+  }
+
+  getPaginationHeaders(pageNumber: number, pageSize: number) {
+    let httpParams = new HttpParams();
+    httpParams = httpParams.append('pageNumber', pageNumber.toString());
+    httpParams = httpParams.append('pageSize', pageSize.toString());
+    return httpParams;
+  }
 
   private getPaginatedResult<T>(url, params) {
     const paginatedResult = new PaginatedResult<T>();
@@ -105,5 +119,4 @@ export class MembersService {
       })
     );
   }
-
 }
