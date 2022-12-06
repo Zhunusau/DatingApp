@@ -97,7 +97,7 @@ namespace API.Data
             
             if(unreadMessages.Any())
             {
-                unreadMessages.ForEach(m => m.DateRead = DateTime.Now);
+                unreadMessages.ForEach(m => m.DateRead = DateTime.UtcNow);
                 await _context.SaveChangesAsync();
             }
 
