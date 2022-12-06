@@ -21,7 +21,8 @@ namespace API
             try
             {
                 var context = services.GetRequiredService<DataContext>();
-                await context.Database.MigrateAsync();  
+                await context.Database.MigrateAsync();
+                await context.Database.ExecuteSqlRawAsync("DELETE FROM [Connections]");
                 var userManager = services.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<AppRole>>();                      
                 await Seed.SeedUsers(userManager, roleManager);
