@@ -1,3 +1,15 @@
 .img-circle {
     max-height: 30px;
 }
+
+.btn-danger-1 {
+    color: #fff;
+    background-color: #f81403;
+    border-color: #df382c;
+}
+
+.btn-danger-1:hover {
+    color: #fff;
+    background-color: #bd332a;
+    border-color: #b22d23;
+}
