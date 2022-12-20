@@ -17,10 +17,10 @@ namespace API.Helpers
 
             var userId = resultContext.HttpContext.User.GetUserId();
             var serviceProvider = resultContext.HttpContext.RequestServices;
-            var userRepository = serviceProvider.GetService<IUserRepository>();
-            var user = await userRepository.GetUserById(userId);
+            var uow = serviceProvider.GetService<IUnitOfWork>();
+            var user = await uow.UserRepository.GetUserById(userId);
             user.LastActive = System.DateTime.Now;
-            await userRepository.SaveAllAsync();
+            await uow.Complete();
         }
     }
 }
